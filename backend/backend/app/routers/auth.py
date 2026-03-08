@@ -59,9 +59,36 @@ async def register(req: RegisterRequest):
     return AuthResponse(user=user, token=token)
 
 
+# ── Hardcoded demo user for hackathon ──────────────────────────────
+DEMO_USER = {
+    "id": "demo-user-001",
+    "name": "Demo User",
+    "phone": "9876543210",
+    "consumer_id": "DEMO123",
+    "vehicle_number": "KL01AB1234",
+    "dl_number": "DL-1234567890",
+    "created_at": "2026-03-08T00:00:00"
+}
+
+DEMO_IDENTIFIERS = {
+    "challan": "DEMO123",
+    "vehicle": "KL01AB1234",
+    "dl": "DL-1234567890",
+}
+
+
 @router.post("/login", response_model=AuthResponse)
 async def login(req: LoginRequest):
     """Login with a unique identifier (consumer ID, vehicle number or DL number)."""
+    
+    # Check for demo user first (hardcoded for hackathon)
+    demo_id = DEMO_IDENTIFIERS.get(req.identifierType, "").upper()
+    if req.identifier.strip().upper() == demo_id:
+        token = str(uuid.uuid4())
+        logger.info(f"Demo user logged in via {req.identifierType}")
+        return AuthResponse(user=DEMO_USER, token=token)
+    
+    # Regular database lookup
     user = find_user_by_identifier(req.identifier, req.identifierType)
     if not user:
         raise HTTPException(status_code=404, detail="No user found with that identifier.")
