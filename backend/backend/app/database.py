@@ -115,6 +115,32 @@ def init_db():
     """)
     
     conn.commit()
+    
+    # ── Demo user for hackathon ──────────────────────────────
+    # Login with: consumer_id="DEMO123", vehicle="KL01AB1234", or dl="DL-1234567890"
+    demo_user_id = "demo-user-001"
+    conn.execute("""
+        INSERT OR IGNORE INTO users (id, name, phone, consumer_id, vehicle_number, dl_number)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (demo_user_id, "Demo User", "9876543210", "DEMO123", "KL01AB1234", "DL-1234567890"))
+    
+    # Create a demo profile with utility accounts
+    demo_profile_id = "demo-profile-001"
+    conn.execute("""
+        INSERT OR IGNORE INTO profiles (id, user_id, name)
+        VALUES (?, ?, ?)
+    """, (demo_profile_id, demo_user_id, "My Home"))
+    
+    # Add demo utility accounts
+    conn.execute("""
+        INSERT OR IGNORE INTO utility_accounts (id, profile_id, service_type, consumer_id, label)
+        VALUES 
+            ('demo-acc-001', ?, 'electricity', '1234567890', 'Home Electricity'),
+            ('demo-acc-002', ?, 'water', 'WTR987654', 'Home Water'),
+            ('demo-acc-003', ?, 'echallan', 'KL01AB1234', 'My Car')
+    """, (demo_profile_id, demo_profile_id, demo_profile_id))
+    
+    conn.commit()
     conn.close()
 
 
