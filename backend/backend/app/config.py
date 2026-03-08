@@ -59,6 +59,9 @@ class Settings(BaseSettings):
     twilio_auth_token: Optional[str] = None
     twilio_whatsapp_from: Optional[str] = None
     
+    # Browser Automation (Pinchtab)
+    pinchtab_url: Optional[str] = None
+    
     class Config:
         env_file = str(ENV_FILE)
         env_file_encoding = "utf-8"
