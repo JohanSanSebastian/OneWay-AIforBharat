@@ -26,6 +26,10 @@ async def lifespan(app: FastAPI):
     logger.info(f"Bedrock Model: {settings.bedrock_model_id}")
     logger.info(f"Debug Mode: {settings.debug}")
     
+    # Log Pinchtab configuration if available (browser automation)
+    if settings.pinchtab_url:
+        logger.info(f"Pinchtab Browser Automation URL: {settings.pinchtab_url}")
+    
     # Validate AWS credentials availability (explicit keys OR default credential chain)
     session_kwargs = {"region_name": settings.aws_region}
     if settings.has_explicit_aws_keys:
@@ -61,9 +65,16 @@ app = FastAPI(
 )
 
 # CORS middleware for React frontend
+# Allow GitHub Pages and localhost for development
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://johansebastian.github.io",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:5173"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
