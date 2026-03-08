@@ -135,8 +135,8 @@ def init_db():
     conn.execute("""
         INSERT OR IGNORE INTO utility_accounts (id, profile_id, service_type, consumer_id, label)
         VALUES 
-            ('demo-acc-001', ?, 'electricity', '1234567890', 'Home Electricity'),
-            ('demo-acc-002', ?, 'water', 'WTR987654', 'Home Water'),
+            ('demo-acc-001', ?, 'kseb', '1234567890', 'Home Electricity'),
+            ('demo-acc-002', ?, 'kwa', 'WTR987654', 'Home Water'),
             ('demo-acc-003', ?, 'echallan', 'KL01AB1234', 'My Car')
     """, (demo_profile_id, demo_profile_id, demo_profile_id))
     
